@@ -95,6 +95,7 @@ $result = $stmt->get_result();
                                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                                     <div class="mb-2"><label>Product Number</label><input type="text" name="product_number" class="form-control" value="<?= $row['product_number'] ?>" required></div>
                                     <div class="mb-2"><label>Name</label><input type="text" name="name" class="form-control" value="<?= $row['name'] ?>" required></div>
+                                    <div class="mb-2"><label>Description</label><textarea name="description" class="form-control" rows="3"><?= htmlspecialchars($row['description']) ?></textarea></div>
                                     <div class="mb-2"><label>Category</label><input type="text" name="category" class="form-control" value="<?= $row['category'] ?>"></div>
                                     <div class="mb-2"><label>Brand</label><input type="text" name="brand" class="form-control" value="<?= $row['brand'] ?>"></div>
                                     <div class="mb-2"><label>Supplier</label><input type="text" name="supplier" class="form-control" value="<?= $row['supplier'] ?>"></div>
@@ -131,6 +132,7 @@ $result = $stmt->get_result();
                 <div class="modal-body">
                     <div class="mb-2"><label>Product Number</label><input type="text" name="product_number" class="form-control" required></div>
                     <div class="mb-2"><label>Name</label><input type="text" name="name" class="form-control" required></div>
+                    <div class="mb-2"><label>Description</label><textarea name="description" class="form-control" rows="3"></textarea></div>
                     <div class="mb-2"><label>Category</label><input type="text" name="category" class="form-control"></div>
                     <div class="mb-2"><label>Brand</label><input type="text" name="brand" class="form-control"></div>
                     <div class="mb-2"><label>Supplier</label><input type="text" name="supplier" class="form-control"></div>
