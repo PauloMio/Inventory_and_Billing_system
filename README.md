@@ -9,7 +9,7 @@ A web based system used for Inventory record, billing, returning, and Admin cont
 Inventory_and_Billing_system/
 │
 ├── database/
-│   └── db_connection.php
+│   └── db_connect.php
 ├── images/
 │   └── icons/
 ├── tabs/
@@ -24,3 +24,8 @@ Inventory_and_Billing_system/
 │   └── mainMenu.php
 ├── index.php
 ├── README.md
+
+--------------------------------------------------------
+2. Routes
+--------------------------------------------------------
+http://localhost/Inventory_and_Billing_system/tabs/inventory/invenotry.php
