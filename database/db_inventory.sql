@@ -24,10 +24,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ctegory`
+-- Table structure for table `category`
 --
 
-CREATE TABLE `ctegory` (
+CREATE TABLE `category` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE `ctegory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `ctegory`
+-- Dumping data for table `category`
 --
 
-INSERT INTO `ctegory` (`id`, `name`, `created_at`, `updated_at`) VALUES
+INSERT INTO `category` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (1, 'CPU', '2025-10-27 14:13:20', NULL),
 (2, 'Hard Disk', '2025-10-27 14:13:10', NULL),
 (3, 'RAM', '2025-10-27 14:13:13', '2025-10-27 14:13:16'),
@@ -152,9 +152,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 --
 
 --
--- Indexes for table `ctegory`
+-- Indexes for table `category`
 --
-ALTER TABLE `ctegory`
+ALTER TABLE `category`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -196,9 +196,9 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `ctegory`
+-- AUTO_INCREMENT for table `category`
 --
-ALTER TABLE `ctegory`
+ALTER TABLE `category`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
