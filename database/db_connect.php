@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";  // change if needed
 $pass = "";      // change if needed
-$db   = "olpconnect3";
+$db   = "inventorydb";
 
 $conn = new mysqli($host, $user, $pass, $db);
 
