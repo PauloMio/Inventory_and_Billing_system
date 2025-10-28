@@ -118,7 +118,6 @@ $result = $stmt->get_result();
                                     <div class="mb-2"><label>Date of Arrival</label><input type="date" name="date_of_arrival" class="form-control" value="<?= $row['date_of_arrival'] ?>"></div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <button class="btn btn-primary" name="update">Update</button>
                                 </div>
                             </div>
@@ -165,7 +164,6 @@ $result = $stmt->get_result();
                     <div class="mb-2"><label>Date of Arrival</label><input type="date" name="date_of_arrival" class="form-control"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button class="btn btn-success" name="add">Save</button>
                 </div>
             </div>

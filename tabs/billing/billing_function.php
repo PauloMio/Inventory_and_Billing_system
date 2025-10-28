@@ -58,7 +58,10 @@ if (isset($_POST['save_transaction'])) {
         $stmt2->execute();
     }
 
-    echo "<script>alert('Transaction saved successfully!'); window.location='billing.php';</script>";
+    echo "<script>
+        alert('Transaction saved successfully!');
+        window.location='receipt.php?transaction_ID={$transaction_ID}';
+    </script>";
     exit;
 }
 ?>
