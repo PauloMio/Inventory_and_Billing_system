@@ -1,19 +1,14 @@
 <?php
 include '../../database/db_connect.php';
 
-if (!isset($_GET['transaction_ID'])) {
-    die("Transaction ID not specified.");
-}
-
+if (!isset($_GET['transaction_ID'])) die("Transaction ID not specified.");
 $transaction_ID = $_GET['transaction_ID'];
 
-// Fetch customer info
 $stmt = $conn->prepare("SELECT * FROM customer_info WHERE transaction_ID = ?");
 $stmt->bind_param("s", $transaction_ID);
 $stmt->execute();
 $customer = $stmt->get_result()->fetch_assoc();
 
-// Fetch purchased products
 $stmt = $conn->prepare("SELECT * FROM customer_product WHERE transaction_ID = ?");
 $stmt->bind_param("s", $transaction_ID);
 $stmt->execute();
@@ -30,9 +25,7 @@ $products = $stmt->get_result();
 <style>
 body { padding: 20px; }
 .table th, .table td { vertical-align: middle; }
-@media print {
-    .no-print { display: none; }
-}
+@media print { .no-print { display: none; } }
 </style>
 </head>
 <body>
@@ -40,13 +33,13 @@ body { padding: 20px; }
 <div class="container">
     <div class="text-center mb-4">
         <h2>Store Name</h2>
-        <p>Transaction Receipt</p>
+        <p>Official Transaction Receipt</p>
     </div>
 
     <div class="mb-3">
         <strong>Transaction ID:</strong> <?= htmlspecialchars($transaction_ID) ?><br>
         <strong>Date:</strong> <?= date("Y-m-d H:i", strtotime($customer['created_at'])) ?><br>
-        <strong>Customer Name:</strong> <?= htmlspecialchars($customer['name']) ?><br>
+        <strong>Customer:</strong> <?= htmlspecialchars($customer['name']) ?><br>
         <strong>Address:</strong> <?= htmlspecialchars($customer['address']) ?><br>
         <strong>Contact:</strong> <?= htmlspecialchars($customer['cp_number']) ?>
     </div>
@@ -56,16 +49,15 @@ body { padding: 20px; }
             <thead class="table-secondary">
                 <tr>
                     <th>#</th>
-                    <th>Product Name</th>
+                    <th>Product</th>
                     <th>Price</th>
-                    <th>Quantity</th>
+                    <th>Qty</th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
                 <?php 
-                $sum_total = 0;
-                $i = 1;
+                $sum_total = 0; $i = 1;
                 while ($row = $products->fetch_assoc()):
                     $sum_total += $row['total_price'];
                 ?>
@@ -77,12 +69,14 @@ body { padding: 20px; }
                     <td>₱<?= number_format($row['total_price'],2) ?></td>
                 </tr>
                 <?php endwhile; ?>
-                <tr>
-                    <td colspan="4" class="text-end fw-bold">Grand Total:</td>
-                    <td class="fw-bold">₱<?= number_format($sum_total,2) ?></td>
-                </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="text-end mb-4">
+        <h5>Total: ₱<?= number_format($sum_total, 2) ?></h5>
+        <h5>Payment: ₱<?= number_format($customer['payment'], 2) ?></h5>
+        <h5>Change: ₱<?= number_format($customer['change_amount'], 2) ?></h5>
     </div>
 
     <div class="text-center mt-4">
@@ -94,9 +88,7 @@ body { padding: 20px; }
 </div>
 
 <script>
-window.onload = function() {
-    window.print(); // Auto-trigger print preview
-}
+window.onload = () => window.print();
 </script>
 </body>
 </html>

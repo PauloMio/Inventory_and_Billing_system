@@ -18,9 +18,7 @@ if (isset($_GET['barcode'])) {
                 'price' => (float)$row['selling_price']
             ]
         ]);
-    } else {
-        echo json_encode(['success' => false]);
-    }
+    } else echo json_encode(['success' => false]);
     exit;
 }
 
@@ -30,6 +28,7 @@ if (isset($_POST['save_transaction'])) {
     $name = $_POST['name'];
     $address = $_POST['address'];
     $cp_number = $_POST['cp_number'];
+    $payment = (float)$_POST['payment'];
     $productData = json_decode($_POST['product_data'], true);
 
     if (!$productData || count($productData) === 0) {
@@ -37,22 +36,24 @@ if (isset($_POST['save_transaction'])) {
         exit;
     }
 
-    // Insert customer info
-    $stmt = $conn->prepare("INSERT INTO customer_info (transaction_ID, name, address, cp_number, created_at) VALUES (?, ?, ?, ?, NOW())");
-    $stmt->bind_param("ssss", $transaction_ID, $name, $address, $cp_number);
-    $stmt->execute();
-
-    // Compute sum_total
+    // Compute totals
     $sum_total = 0;
     foreach ($productData as $p) $sum_total += $p['total_price'];
+    $change = $payment - $sum_total;
 
-    // Insert products & update inventory
+    // Insert customer info
+    $stmt = $conn->prepare("INSERT INTO customer_info (transaction_ID, name, address, cp_number, payment, change_amount, created_at)
+                            VALUES (?, ?, ?, ?, ?, ?, NOW())");
+    $stmt->bind_param("ssssdd", $transaction_ID, $name, $address, $cp_number, $payment, $change);
+    $stmt->execute();
+
+    // Insert products and update inventory
     foreach ($productData as $p) {
-        $stmt = $conn->prepare("INSERT INTO customer_product (transaction_ID, product_name, price, quantity, total_price, sum_total, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt = $conn->prepare("INSERT INTO customer_product (transaction_ID, product_name, price, quantity, total_price, sum_total, created_at)
+                                VALUES (?, ?, ?, ?, ?, ?, NOW())");
         $stmt->bind_param("ssdddd", $transaction_ID, $p['name'], $p['price'], $p['quantity'], $p['total_price'], $sum_total);
         $stmt->execute();
 
-        // Update inventory stock
         $stmt2 = $conn->prepare("UPDATE inventory SET current_stock = current_stock - ? WHERE barcode = ?");
         $stmt2->bind_param("is", $p['quantity'], $p['barcode']);
         $stmt2->execute();

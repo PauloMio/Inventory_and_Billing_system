@@ -93,10 +93,26 @@ while (in_array($transaction_ID, $existing_ids)) {
             </div>
         </div>
 
+        <!-- Payment Section -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">Payment Details</div>
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-4">
+                        <label>Payment Amount (₱) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" name="payment" id="paymentInput" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Change (₱)</label>
+                        <input type="text" id="changeInput" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="text-end">
             <button class="btn btn-primary px-4" name="save_transaction">Save Transaction</button>
             <a href="load_transaction.php" class="btn btn-info ms-2">Load Previous Transaction</a>
-
         </div>
 
         <!-- Hidden JSON field for products -->
@@ -111,6 +127,8 @@ const barcodeInput = document.getElementById('barcodeInput');
 const productTable = document.querySelector('#productTable tbody');
 const sumTotalEl = document.getElementById('sumTotal');
 const productDataInput = document.getElementById('productData');
+const paymentInput = document.getElementById('paymentInput');
+const changeInput = document.getElementById('changeInput');
 let products = [];
 
 // --- Fetch product by barcode
@@ -122,11 +140,8 @@ barcodeInput.addEventListener('keypress', function(e) {
         fetch(`billing_function.php?barcode=${barcode}`)
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    addProduct(data.product);
-                } else {
-                    alert('Product not found!');
-                }
+                if (data.success) addProduct(data.product);
+                else alert('Product not found!');
                 barcodeInput.value = '';
             });
     }
@@ -150,7 +165,6 @@ function addProduct(product) {
 function renderTable() {
     productTable.innerHTML = '';
     let sumTotal = 0;
-
     products.forEach((p, i) => {
         sumTotal += p.total_price;
         const row = `
@@ -160,13 +174,12 @@ function renderTable() {
                 <td><input type="number" min="1" value="${p.quantity}" class="form-control form-control-sm" onchange="updateQty(${i}, this.value)"></td>
                 <td>₱${p.total_price.toFixed(2)}</td>
                 <td><button type="button" class="btn btn-danger btn-sm" onclick="removeProduct(${i})">Remove</button></td>
-            </tr>
-        `;
+            </tr>`;
         productTable.insertAdjacentHTML('beforeend', row);
     });
-
     sumTotalEl.textContent = sumTotal.toFixed(2);
     productDataInput.value = JSON.stringify(products);
+    calculateChange();
 }
 
 // --- Update quantity
@@ -194,19 +207,31 @@ document.getElementById('clearTable').addEventListener('click', () => {
     }
 });
 
+// --- Payment and change calculation
+paymentInput.addEventListener('input', calculateChange);
+function calculateChange() {
+    const total = parseFloat(sumTotalEl.textContent);
+    const payment = parseFloat(paymentInput.value) || 0;
+    const change = payment - total;
+    changeInput.value = change >= 0 ? change.toFixed(2) : '0.00';
+}
+
 // --- Validate form before submit
 function validateForm() {
-    if (!products || products.length === 0) {
-        alert('Please add at least one product to the bill.');
+    if (!products.length) {
+        alert('Please add at least one product.');
         return false;
     }
-
-    const nameField = document.querySelector('input[name="name"]');
-    if (!nameField.value.trim()) {
+    if (!document.querySelector('input[name="name"]').value.trim()) {
         alert('Please enter customer name.');
         return false;
     }
-
+    const total = parseFloat(sumTotalEl.textContent);
+    const payment = parseFloat(paymentInput.value) || 0;
+    if (payment < total) {
+        alert('Payment must be equal to or greater than total.');
+        return false;
+    }
     productDataInput.value = JSON.stringify(products);
     return true;
 }
