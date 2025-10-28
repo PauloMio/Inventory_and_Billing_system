@@ -89,6 +89,7 @@ body { padding: 20px; }
         <p>Thank you for your purchase!</p>
         <button onclick="window.print();" class="btn btn-primary no-print">Print Receipt</button>
         <a href="billing.php" class="btn btn-success no-print">New Transaction</a>
+        <a href="load_transaction.php" class="btn btn-info no-print">Load Previous Transaction</a>
     </div>
 </div>
 

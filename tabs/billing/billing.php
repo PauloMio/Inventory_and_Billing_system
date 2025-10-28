@@ -95,6 +95,8 @@ while (in_array($transaction_ID, $existing_ids)) {
 
         <div class="text-end">
             <button class="btn btn-primary px-4" name="save_transaction">Save Transaction</button>
+            <a href="load_transaction.php" class="btn btn-info ms-2">Load Previous Transaction</a>
+
         </div>
 
         <!-- Hidden JSON field for products -->
