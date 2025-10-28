@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2025 at 03:21 PM
+-- Generation Time: Oct 28, 2025 at 05:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_inventory`
+-- Database: `for_fresh_tables`
 --
 
 -- --------------------------------------------------------
@@ -34,20 +34,6 @@ CREATE TABLE `category` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `category`
---
-
-INSERT INTO `category` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'CPU', '2025-10-27 14:13:20', NULL),
-(2, 'Hard Disk', '2025-10-27 14:13:10', NULL),
-(3, 'RAM', '2025-10-27 14:13:13', '2025-10-27 14:13:16'),
-(4, 'SPEAKER', '2025-10-27 14:15:54', NULL),
-(5, 'KEYBOARD', '2025-10-27 14:15:57', NULL),
-(6, 'MOUSE', '2025-10-27 14:15:59', NULL),
-(7, 'LAPTOP', '2025-10-27 14:16:01', NULL),
-(8, 'HEADPHONES', '2025-10-27 14:16:03', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -60,6 +46,8 @@ CREATE TABLE `customer_info` (
   `name` varchar(255) NOT NULL,
   `address` varchar(255) DEFAULT NULL,
   `cp_number` varchar(255) DEFAULT NULL,
+  `payment` decimal(10,2) NOT NULL,
+  `change_amount` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -109,6 +97,19 @@ CREATE TABLE `inventory` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `remarks`
+--
+
+CREATE TABLE `remarks` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `returns`
 --
 
@@ -141,13 +142,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin', 'admin@gmail.com', NULL, 'admin@123', NULL, NULL, NULL);
-
---
 -- Indexes for dumped tables
 --
 
@@ -178,6 +172,12 @@ ALTER TABLE `inventory`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `remarks`
+--
+ALTER TABLE `remarks`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `returns`
 --
 ALTER TABLE `returns`
@@ -199,7 +199,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `customer_info`
@@ -220,6 +220,12 @@ ALTER TABLE `inventory`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `remarks`
+--
+ALTER TABLE `remarks`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `returns`
 --
 ALTER TABLE `returns`
@@ -229,7 +235,7 @@ ALTER TABLE `returns`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
