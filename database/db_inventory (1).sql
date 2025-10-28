@@ -130,6 +130,24 @@ CREATE TABLE `remarks` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `remarks` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Damaged Product', NULL, NULL),
+(2, 'Wrong Item received', NULL, NULL),
+(3, 'Product Not as Described', NULL, NULL),
+(4, 'Changed Mind', NULL, NULL),
+(5, 'Defective Product', NULL, NULL),
+(6, 'Quality Issue', NULL, NULL),
+(7, 'Order Error', NULL, NULL),
+(8, 'Better Price Found', NULL, NULL),
+(9, 'Unwanted Gift', NULL, NULL),
+(10, 'Product Does not Work', NULL, NULL),
+(11, 'Received Duplicate item', NULL, NULL),
+(12, 'Not satisfied with quality', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
