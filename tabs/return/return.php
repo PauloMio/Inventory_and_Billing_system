@@ -25,7 +25,10 @@ body { background-color: #f8f9fa; }
 <body>
 
 <div class="container py-5">
-    <h2 class="text-center mb-4">Return System</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Return System</h2>
+        <a href="return_history.php" class="btn btn-info">View Return History</a>
+    </div>
 
     <!-- Search Form -->
     <div class="card shadow-sm mb-4">
