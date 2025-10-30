@@ -33,5 +33,7 @@ http://localhost/Inventory_and_Billing_system/tabs/inventory/invenotry.php
 --------------------------------------------------------
 3. Account
 --------------------------------------------------------
+"Admin"
 email: admin@gmail.com
 password: admin@123
+

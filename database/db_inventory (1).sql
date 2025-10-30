@@ -88,6 +88,19 @@ CREATE TABLE `customer_product` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `department`
+--
+
+CREATE TABLE `department` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `department` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `inventory`
 --
 
@@ -177,10 +190,18 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
+  `department` varchar(255) NOT NULL,
+  `status` ENUM('Active', 'Inactive') NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `department`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Admin', 'admin@gmail.com', NULL, '$2y$10$OzMK3eD/R0JHHpyGXujZE.091eSnGZXxzZ7DNnplNi32ienW5NTLS', 'Admin', 'Active', '2025-10-30 09:48:15', '2025-10-30 09:49:01');
 
 --
 -- Indexes for dumped tables
@@ -205,6 +226,12 @@ ALTER TABLE `customer_info`
 ALTER TABLE `customer_product`
   ADD PRIMARY KEY (`id`),
   ADD KEY `customer_product_transaction_id_foreign` (`transaction_ID`);
+
+--
+-- Indexes for table `department`
+--
+ALTER TABLE `department`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `inventory`
@@ -253,6 +280,12 @@ ALTER TABLE `customer_info`
 --
 ALTER TABLE `customer_product`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `department`
+--
+ALTER TABLE `department`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `inventory`
