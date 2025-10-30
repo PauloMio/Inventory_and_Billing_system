@@ -88,7 +88,6 @@ body { background-color: #f8f9fa; }
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>ID</th>
                         <th>Remark</th>
                         <th>Created At</th>
                         <th>Actions</th>
@@ -97,7 +96,6 @@ body { background-color: #f8f9fa; }
                 <tbody>
                     <?php while ($row = $remarks->fetch_assoc()): ?>
                     <tr>
-                        <td><?= $row['id'] ?></td>
                         <td><?= htmlspecialchars($row['name']) ?></td>
                         <td><?= $row['created_at'] ?></td>
                         <td>

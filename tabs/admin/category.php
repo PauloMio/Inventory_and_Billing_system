@@ -80,7 +80,6 @@ $categories = $stmt->get_result();
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Created At</th>
                         <th>Actions</th>
@@ -89,7 +88,6 @@ $categories = $stmt->get_result();
                 <tbody>
                     <?php while($row = $categories->fetch_assoc()): ?>
                     <tr>
-                        <td><?= $row['id'] ?></td>
                         <td><?= htmlspecialchars($row['name']) ?></td>
                         <td><?= $row['created_at'] ?></td>
                         <td>

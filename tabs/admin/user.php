@@ -37,6 +37,11 @@ body { background-color: #f8f9fa; }
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</button>
     </div>
 
+    <!-- Search Box -->
+    <div class="mb-3">
+        <input type="text" id="searchUser" class="form-control" placeholder="Search by name, email, or department...">
+    </div>
+
     <!-- Users Table -->
     <div class="card shadow-sm">
         <div class="card-body table-responsive">
