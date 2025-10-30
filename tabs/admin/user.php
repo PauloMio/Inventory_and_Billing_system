@@ -37,33 +37,28 @@ body { background-color: #f8f9fa; }
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</button>
     </div>
 
-    <!-- Search Box -->
-    <div class="mb-3">
-        <input type="text" id="searchUser" class="form-control" placeholder="Search by name, email, or department...">
-    </div>
-
     <!-- Users Table -->
     <div class="card shadow-sm">
         <div class="card-body table-responsive">
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Department</th>
                         <th>Status</th>
+                        <th>Created At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php while($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= $row['id'] ?></td>
                         <td><?= htmlspecialchars($row['name']) ?></td>
                         <td><?= htmlspecialchars($row['email']) ?></td>
                         <td><?= htmlspecialchars($row['department']) ?></td>
                         <td><?= $row['status'] ?></td>
+                        <td><?= $row['created_at'] ?></td>
                         <td>
                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal<?= $row['id'] ?>">Edit</button>
                             <a href="user_function.php?delete_id=<?= $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
