@@ -139,7 +139,7 @@ INSERT INTO `inventory` (`id`, `product_number`, `name`, `description`, `categor
 CREATE TABLE `logs` (
   `id` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `attempt` enum('Invalid username or password','logged in') NOT NULL,
+  `attempt` enum('invalid email,password or account inactive','logged in') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
