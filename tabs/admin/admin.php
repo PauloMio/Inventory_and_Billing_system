@@ -167,6 +167,11 @@
                 <i class="fa-solid fa-user-gear"></i>
                 <span>User</span>
             </a>
+
+            <a href="report.php" class="menu-btn">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reports</span>
+            </a>
         </div>
 
         <!-- Back to Main Menu Button -->
