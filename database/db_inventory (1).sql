@@ -98,6 +98,15 @@ CREATE TABLE `department` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `department`
+--
+
+INSERT INTO `department` (`id`, `department`, `created_at`, `updated_at`) VALUES
+(8, 'Billing', '2025-10-30 09:40:28', NULL),
+(9, 'Inventory', '2025-10-30 09:42:28', NULL),
+(10, 'Admin', '2025-10-30 09:42:36', NULL);
+
 -- --------------------------------------------------------
 
 --
