@@ -1,4 +1,5 @@
 <?php
+include '../security_check.php';
 include '../../database/db_connect.php';
 
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';

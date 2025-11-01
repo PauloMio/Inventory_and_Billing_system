@@ -1,4 +1,5 @@
 <?php
+include '../security_check.php';
 include '../../database/db_connect.php';
 
 if (!isset($_GET['transaction_ID'])) die("Transaction ID not specified.");

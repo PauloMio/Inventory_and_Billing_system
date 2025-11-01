@@ -1,4 +1,5 @@
 <?php
+include '../security_check.php';
 include '../../database/db_connect.php';
 
 // Fetch all returns ordered by created_at DESC (default: latest first)

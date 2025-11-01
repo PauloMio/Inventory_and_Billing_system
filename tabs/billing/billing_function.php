@@ -1,4 +1,5 @@
 <?php
+include '../security_check.php';
 include '../../database/db_connect.php';
 
 // --- Search product by barcode

@@ -1,4 +1,5 @@
 <?php
+include '../security_check.php';
 include '../../database/db_connect.php';
 include 'report_function.php'; // Backend functions for data fetching
 

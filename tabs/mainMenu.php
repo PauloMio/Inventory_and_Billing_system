@@ -1,3 +1,5 @@
+<?php include 'security_check.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -185,7 +187,7 @@ body {
     </div>
 
     <!-- Logout Button -->
-    <a href="../index.php" class="logout-btn mt-4">
+    <a href="logout.php" class="logout-btn mt-4">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
     </a>
 
