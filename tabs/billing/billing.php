@@ -62,16 +62,16 @@ while (in_array($transaction_ID, $existing_ids)) {
             <div class="card-body">
                 <div class="row g-3 align-items-center">
 
-                    <!-- Manual Barcode Entry -->
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Manual Search</label>
-                        <input type="text" id="barcodeInput" class="form-control" placeholder="Enter Barcode and press Enter">
-                    </div>
-
                     <!-- Auto Barcode Scanner -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Barcode Scanner (Auto)</label>
                         <input type="text" id="autoBarcodeInput" class="form-control" placeholder="Scan Barcode Automatically">
+                    </div>
+
+                    <!-- Manual Barcode Entry -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Manual Search</label>
+                        <input type="text" id="barcodeInput" class="form-control" placeholder="Enter Barcode and press Enter">
                     </div>
 
                     <div class="col-md-12 text-end mt-3">
