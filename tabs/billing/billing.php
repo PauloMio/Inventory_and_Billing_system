@@ -61,10 +61,20 @@ while (in_array($transaction_ID, $existing_ids)) {
             <div class="card-header bg-dark text-white">Product Lookup</div>
             <div class="card-body">
                 <div class="row g-3 align-items-center">
+
+                    <!-- Manual Barcode Entry -->
                     <div class="col-md-6">
+                        <label class="form-label fw-bold">Manual Search</label>
                         <input type="text" id="barcodeInput" class="form-control" placeholder="Enter Barcode and press Enter">
                     </div>
-                    <div class="col-md-6 text-end">
+
+                    <!-- Auto Barcode Scanner -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Barcode Scanner (Auto)</label>
+                        <input type="text" id="autoBarcodeInput" class="form-control" placeholder="Scan Barcode Automatically">
+                    </div>
+
+                    <div class="col-md-12 text-end mt-3">
                         <button type="button" class="btn btn-success" id="clearTable">Clear Table</button>
                     </div>
                 </div>
@@ -116,7 +126,6 @@ while (in_array($transaction_ID, $existing_ids)) {
             <a href="load_transaction.php" class="btn btn-info ms-2">Load Previous Transaction</a>
         </div>
 
-        <!-- Hidden JSON field for products -->
         <input type="hidden" name="product_data" id="productData">
     </form>
 </div>
@@ -125,6 +134,7 @@ while (in_array($transaction_ID, $existing_ids)) {
 <script>
 // --- Elements
 const barcodeInput = document.getElementById('barcodeInput');
+const autoBarcodeInput = document.getElementById('autoBarcodeInput');
 const productTable = document.querySelector('#productTable tbody');
 const sumTotalEl = document.getElementById('sumTotal');
 const productDataInput = document.getElementById('productData');
@@ -132,23 +142,55 @@ const paymentInput = document.getElementById('paymentInput');
 const changeInput = document.getElementById('changeInput');
 let products = [];
 
-// --- Fetch product by barcode
+// --- Manual Search (Press Enter)
 barcodeInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
-        const barcode = barcodeInput.value.trim();
-        if (!barcode) return;
-        fetch(`billing_function.php?barcode=${barcode}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) addProduct(data.product);
-                else alert('Product not found!');
-                barcodeInput.value = '';
-            });
+        searchBarcode(barcodeInput.value.trim());
+        barcodeInput.value = '';
     }
 });
 
-// --- Add product
+// --- Auto Barcode Scanner Search ---
+let typingTimer;
+let lastKeyTime = 0;
+
+autoBarcodeInput.addEventListener('input', function() {
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastKeyTime;
+    lastKeyTime = currentTime;
+
+    // If typing is fast (scanner), reset timer
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => {
+        const barcode = autoBarcodeInput.value.trim();
+        if (barcode.length > 0) {
+            searchBarcode(barcode);
+            autoBarcodeInput.value = '';
+        }
+    }, timeDiff < 30 ? 100 : 500); // shorter delay for scanner input
+});
+
+// --- Search function (shared)
+function searchBarcode(barcode) {
+    if (!barcode) return;
+    fetch(`billing_function.php?barcode=${barcode}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                addProduct(data.product);
+            } else {
+                alert('Product not found!');
+            }
+            // --- Keep focus on the auto barcode input for next scan
+            autoBarcodeInput.focus();
+        })
+        .catch(() => {
+            autoBarcodeInput.focus();
+        });
+}
+
+// --- Add Product
 function addProduct(product) {
     const existing = products.find(p => p.barcode === product.barcode);
     if (existing) {
@@ -162,7 +204,7 @@ function addProduct(product) {
     renderTable();
 }
 
-// --- Render table
+// --- Render Table
 function renderTable() {
     productTable.innerHTML = '';
     let sumTotal = 0;
@@ -183,7 +225,7 @@ function renderTable() {
     calculateChange();
 }
 
-// --- Update quantity
+// --- Update Quantity
 function updateQty(index, qty) {
     qty = parseInt(qty);
     if (qty < 1) qty = 1;
@@ -192,7 +234,7 @@ function updateQty(index, qty) {
     renderTable();
 }
 
-// --- Remove product
+// --- Remove Product
 function removeProduct(index) {
     if (confirm('Remove this product?')) {
         products.splice(index, 1);
@@ -200,7 +242,7 @@ function removeProduct(index) {
     }
 }
 
-// --- Clear table
+// --- Clear Table
 document.getElementById('clearTable').addEventListener('click', () => {
     if (confirm('Clear all products?')) {
         products = [];
@@ -208,7 +250,7 @@ document.getElementById('clearTable').addEventListener('click', () => {
     }
 });
 
-// --- Payment and change calculation
+// --- Payment and Change
 paymentInput.addEventListener('input', calculateChange);
 function calculateChange() {
     const total = parseFloat(sumTotalEl.textContent);
@@ -217,7 +259,7 @@ function calculateChange() {
     changeInput.value = change >= 0 ? change.toFixed(2) : '0.00';
 }
 
-// --- Validate form before submit
+// --- Validate Form
 function validateForm() {
     if (!products.length) {
         alert('Please add at least one product.');
@@ -235,6 +277,8 @@ function validateForm() {
     }
     productDataInput.value = JSON.stringify(products);
     return true;
+
+    window.addEventListener('load', () => autoBarcodeInput.focus());
 }
 </script>
 </body>
