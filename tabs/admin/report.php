@@ -30,6 +30,7 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Reports Dashboard</h2>
+    
 
     <!-- Date Filter -->
     <form method="GET" class="row g-3 mb-4">

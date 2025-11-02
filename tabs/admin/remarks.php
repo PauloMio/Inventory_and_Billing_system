@@ -64,6 +64,10 @@ body { background-color: #f8f9fa; }
         <h2>Remarks Management</h2>
     </div>
 
+    <div class="d-flex justify-content-between mb-3">
+        <a href="admin.php" class="btn btn-secondary ms-2">Back to Admin Menu</a>
+    </div>
+
     <!-- Add Remark -->
     <div class="card mb-4 shadow-sm">
         <div class="card-body">

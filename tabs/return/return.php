@@ -28,6 +28,10 @@ body { background-color: #f8f9fa; }
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Return System</h2>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3">
+        <a href="../mainMenu.php" class="btn btn-secondary ms-2">Back to Main Menu</a>
         <a href="return_history.php" class="btn btn-info">View Return History</a>
     </div>
 

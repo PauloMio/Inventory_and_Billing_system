@@ -35,6 +35,10 @@ body { background-color: #f8f9fa; }
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>User Management</h2>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3">
+        <a href="admin.php" class="btn btn-secondary ms-2">Back to Admin Menu</a>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</button>
     </div>
 
@@ -111,7 +115,7 @@ body { background-color: #f8f9fa; }
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" name="update_user" class="btn btn-primary">Update User</button>
+                                        <button type="submit" name="edit_user" class="btn btn-primary">Update User</button>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     </div>
                                 </div>

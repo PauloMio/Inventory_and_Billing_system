@@ -40,6 +40,9 @@ $result = $stmt->get_result();
 
 <div class="container mt-5">
     <h2 class="mb-4">Inventory Management</h2>
+    <div class="d-flex justify-content-between mb-3">
+        <a href="../mainMenu.php" class="btn btn-secondary ms-2">Back to Main Menu</a>
+    </div>
 
     <!-- Search + Add Button -->
     <div class="d-flex justify-content-between mb-3">

@@ -57,6 +57,10 @@ $departments = $stmt->get_result();
 <div class="container mt-5">
     <h2 class="mb-4">Department Management</h2>
 
+    <div class="d-flex justify-content-between mb-3">
+        <a href="admin.php" class="btn btn-secondary ms-2">Back to Admin Menu</a>
+    </div>
+
     <!-- Add Department -->
     <div class="card mb-4 shadow-sm">
         <div class="card-body">
