@@ -5,7 +5,11 @@ include '../../database/db_connect.php';
 function getInventory($from = null, $to = null) {
     global $conn;
     $sql = "SELECT * FROM inventory WHERE 1";
-    if ($from && $to) $sql .= " AND date_of_arrival BETWEEN ? AND ?";
+    if ($from && $to) {
+        $sql .= " AND date_of_arrival BETWEEN ? AND ?";
+        $from .= " 00:00:00";
+        $to .= " 23:59:59";
+    }
     $stmt = $conn->prepare($sql);
     if ($from && $to) $stmt->bind_param("ss", $from, $to);
     $stmt->execute();
@@ -22,6 +26,8 @@ function getBillingWithProducts($from = null, $to = null) {
 
     if ($from && $to) {
         $sql .= " AND ci.created_at BETWEEN ? AND ?";
+        $from .= " 00:00:00";
+        $to .= " 23:59:59";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $from, $to);
     } else {
@@ -31,7 +37,6 @@ function getBillingWithProducts($from = null, $to = null) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Group by transaction ID
     $billingData = [];
     while ($row = $result->fetch_assoc()) {
         $transactionID = $row['transaction_ID'];
@@ -64,7 +69,11 @@ function getBillingWithProducts($from = null, $to = null) {
 function getReturns($from = null, $to = null) {
     global $conn;
     $sql = "SELECT * FROM returns WHERE 1";
-    if ($from && $to) $sql .= " AND created_at BETWEEN ? AND ?";
+    if ($from && $to) {
+        $sql .= " AND created_at BETWEEN ? AND ?";
+        $from .= " 00:00:00";
+        $to .= " 23:59:59";
+    }
     $stmt = $conn->prepare($sql);
     if ($from && $to) $stmt->bind_param("ss", $from, $to);
     $stmt->execute();

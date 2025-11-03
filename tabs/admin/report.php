@@ -24,6 +24,47 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
 .card-header { background-color: #343a40; color: #fff; border-radius: 15px 15px 0 0; }
 .chart-container { width: 100%; height: 350px; }
 .nested-table { margin-left: 40px; margin-top: 10px; }
+
+/* Voice Button */
+.voice-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+.voice-btn:hover {
+    background-color: rgba(0,0,0,0.9);
+    transform: scale(1.1);
+}
+
+/* Toast */
+.toast-msg {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.toast-msg.show {
+    opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -86,7 +127,7 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
         </div>
     </div>
 
-    <!-- Billing Card (With Product Details) -->
+    <!-- Billing Card -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span>Billing (Customer Transactions)</span>
@@ -184,6 +225,15 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
     </div>
 </div>
 
+<!-- Toast -->
+<div id="toast" class="toast-msg"></div>
+
+<!-- Voice Button -->
+<button class="voice-btn" id="voiceBtn" title="Voice Navigation">
+    <i class="fa-solid fa-microphone"></i>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
 <script>
 // Inventory Chart
 const invLabels = <?= json_encode(array_column($inventoryData, 'name')) ?>;
@@ -209,7 +259,7 @@ new Chart(document.getElementById('returnsChart').getContext('2d'), {
     data: { labels: retLabels, datasets: [{ label: 'Quantity Returned', data: retData, backgroundColor: '#ff6b6b' }] }
 });
 
-// Print Function with header
+// Print Function
 function printDiv(divId) {
     const content = document.getElementById(divId).innerHTML;
     const myWindow = window.open('', '', 'width=900,height=600');
@@ -217,12 +267,43 @@ function printDiv(divId) {
     myWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">');
     myWindow.document.write('<style>body{padding:20px;font-family:Arial,sans-serif;} h2{text-align:center;margin-bottom:20px;}</style>');
     myWindow.document.write('</head><body>');
-    myWindow.document.write('<h2>High Intensity</h2>'); // Header on print
+    myWindow.document.write('<h2>High Intensity</h2>');
     myWindow.document.write(content);
     myWindow.document.write('</body></html>');
     myWindow.document.close();
     myWindow.print();
 }
+
+// --- Voice Navigation ---
+const toast = document.getElementById('toast');
+function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+const voiceBtn = document.getElementById('voiceBtn');
+voiceBtn.addEventListener('click', () => {
+    if (!('webkitSpeechRecognition' in window)) {
+        showToast("Voice recognition not supported.");
+        return;
+    }
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.start();
+    showToast("Listening...");
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        showToast(`Heard: ${transcript}`);
+        if (transcript.includes("admin") || transcript.includes("admin menu") || transcript.includes("go to admin")) {
+            window.location.href = "admin.php";
+        } else {
+            showToast("Command not recognized.");
+        }
+    };
+    recognition.onerror = () => showToast("Error capturing voice.");
+});
 </script>
 </body>
 </html>
