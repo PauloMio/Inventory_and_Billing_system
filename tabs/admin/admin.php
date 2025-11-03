@@ -14,7 +14,6 @@ include '../security_check.php';
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* Background styling */
         body {
             height: 100vh;
             margin: 0;
@@ -26,7 +25,6 @@ include '../security_check.php';
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Container styling */
         .admin-container {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
@@ -44,7 +42,6 @@ include '../security_check.php';
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
         }
 
-        /* Header titles */
         .admin-header h1 {
             font-weight: 700;
             font-size: 2.2rem;
@@ -58,7 +55,6 @@ include '../security_check.php';
             margin-bottom: 40px;
         }
 
-        /* Grid layout */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -67,7 +63,6 @@ include '../security_check.php';
             margin-bottom: 35px;
         }
 
-        /* Buttons */
         .menu-btn {
             background-color: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -99,7 +94,6 @@ include '../security_check.php';
             font-weight: 500;
         }
 
-        /* Back button */
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -127,7 +121,47 @@ include '../security_check.php';
             font-size: 1.2rem;
         }
 
-        /* Responsive adjustments */
+        /* Floating Mic Button */
+        .voice-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .voice-btn:hover {
+            background-color: rgba(255,255,255,0.4);
+            transform: scale(1.1);
+        }
+
+        /* Toast Message */
+        .toast-msg {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .toast-msg.show {
+            opacity: 1;
+        }
+
         @media (max-width: 576px) {
             .menu-btn {
                 padding: 20px;
@@ -144,13 +178,11 @@ include '../security_check.php';
 <body>
 
     <div class="admin-container">
-        <!-- Header -->
         <div class="admin-header mb-4">
             <h1>High Intensity</h1>
             <h5>Admin Control Panel</h5>
         </div>
 
-        <!-- Grid Menu -->
         <div class="menu-grid">
             <a href="category.php" class="menu-btn">
                 <i class="fa-solid fa-tags"></i>
@@ -178,14 +210,66 @@ include '../security_check.php';
             </a>
         </div>
 
-        <!-- Back to Main Menu Button -->
         <a href="../mainMenu.php" class="back-btn">
             <i class="fa-solid fa-arrow-left"></i>
             Back to Main Menu
         </a>
     </div>
 
-    <!-- Bootstrap Script -->
+    <!-- Floating Mic Button -->
+    <div class="voice-btn" id="voiceBtn" title="Click to Speak">
+        <i class="fa-solid fa-microphone"></i>
+    </div>
+
+    <!-- Toast Message -->
+    <div id="toast" class="toast-msg"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const voiceBtn = document.getElementById('voiceBtn');
+        const toast = document.getElementById('toast');
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        voiceBtn.addEventListener('click', () => {
+            if (!('webkitSpeechRecognition' in window)) {
+                showToast("Voice recognition not supported in this browser.");
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.start();
+            showToast("Listening...");
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                showToast(`Heard: ${transcript}`);
+
+                if (transcript.includes("category")) {
+                    window.location.href = "category.php";
+                } else if (transcript.includes("department")) {
+                    window.location.href = "department.php";
+                } else if (transcript.includes("remarks") || transcript.includes("remark")) {
+                    window.location.href = "remarks.php";
+                } else if (transcript.includes("user")) {
+                    window.location.href = "user.php";
+                } else if (transcript.includes("report") || transcript.includes("reports")) {
+                    window.location.href = "report.php";
+                } else if (transcript.includes("main menu") || transcript.includes("back")) {
+                    window.location.href = "../mainMenu.php";
+                } else {
+                    showToast("Command not recognized.");
+                }
+            };
+
+            recognition.onerror = () => showToast("Error capturing voice.");
+        });
+    </script>
 </body>
 </html>

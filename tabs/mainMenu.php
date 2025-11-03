@@ -12,7 +12,6 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
-/* === Global Layout === */
 body {
     height: 100vh;
     margin: 0;
@@ -24,7 +23,6 @@ body {
     color: #fff;
 }
 
-/* === Main Glass Panel === */
 .menu-container {
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
@@ -42,7 +40,6 @@ body {
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
 }
 
-/* === Header Section === */
 .header h1 {
     font-weight: 700;
     font-size: 2.5rem;
@@ -56,7 +53,6 @@ body {
     margin-bottom: 40px;
 }
 
-/* === Menu Buttons === */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -84,7 +80,6 @@ body {
     text-decoration: none;
 }
 
-/* === Menu Icon === */
 .menu-btn img {
     width: 75px;
     height: 75px;
@@ -92,21 +87,12 @@ body {
     filter: drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.4));
 }
 
-/* === Menu Text === */
 .menu-btn span {
     font-size: 1.1rem;
     font-weight: 500;
     letter-spacing: 0.5px;
 }
 
-/* === Footer Text === */
-.footer-text {
-    margin-top: 40px;
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.7);
-}
-
-/* === Logout Button === */
 .logout-btn {
     margin-top: 30px;
     background-color: rgba(255,255,255,0.15);
@@ -130,70 +116,142 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-/* === Responsive Adjustments === */
+/* === Floating Mic Button === */
+.voice-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    border-radius: 50%;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.voice-btn:hover {
+    background-color: rgba(255,255,255,0.4);
+    transform: scale(1.1);
+}
+
+/* Toast display */
+.toast-msg {
+    position: fixed;
+    bottom: 110px;
+    right: 30px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.toast-msg.show {
+    opacity: 1;
+}
+
 @media (max-width: 576px) {
-    .menu-btn {
-        padding: 25px;
-    }
-    .menu-btn img {
-        width: 60px;
-        height: 60px;
-    }
-    .menu-btn span {
-        font-size: 1rem;
-    }
-    .logout-btn {
-        width: 100%;
-    }
+    .menu-btn { padding: 25px; }
+    .menu-btn img { width: 60px; height: 60px; }
+    .menu-btn span { font-size: 1rem; }
+    .logout-btn { width: 100%; }
 }
 </style>
 </head>
 <body>
 
-<!-- === Main Container === -->
 <div class="menu-container">
-
-    <!-- Header -->
     <div class="header">
         <h1>High Intensity</h1>
         <h4>Inventory and Billing System</h4>
     </div>
 
-    <!-- Menu Grid -->
     <div class="menu-grid">
-        <!-- Inventory -->
         <a href="inventory/inventory.php" class="menu-btn">
             <img src="../images/icons/inventory_White.png" alt="Inventory Icon">
             <span>Inventory</span>
         </a>
 
-        <!-- Billing -->
         <a href="billing/billing.php" class="menu-btn">
             <img src="../images/icons/billing_White.png" alt="Billing Icon">
             <span>Billing</span>
         </a>
 
-        <!-- Return -->
         <a href="return/return.php" class="menu-btn">
             <img src="../images/icons/return_White.png" alt="Return Icon">
             <span>Return</span>
         </a>
 
-        <!-- Admin -->
         <a href="admin/admin.php" class="menu-btn">
             <img src="../images/icons/wrench_White.png" alt="Admin Icon">
             <span>Admin</span>
         </a>
     </div>
 
-    <!-- Logout Button -->
     <a href="logout.php" class="logout-btn mt-4">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
     </a>
-
 </div>
 
-<!-- Bootstrap JS -->
+<!-- Voice Command Button -->
+<div class="voice-btn" id="voiceBtn" title="Click to Speak">
+    <i class="fa-solid fa-microphone"></i>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast-msg"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const voiceBtn = document.getElementById('voiceBtn');
+const toast = document.getElementById('toast');
+
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+voiceBtn.addEventListener('click', () => {
+    if (!('webkitSpeechRecognition' in window)) {
+        showToast("Voice recognition not supported in this browser.");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.start();
+    showToast("Listening...");
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        showToast(`Heard: ${transcript}`);
+
+        if (transcript.includes("inventory")) {
+            window.location.href = "inventory/inventory.php";
+        } else if (transcript.includes("billing")) {
+            window.location.href = "billing/billing.php";
+        } else if (transcript.includes("return")) {
+            window.location.href = "return/return.php";
+        } else if (transcript.includes("admin")) {
+            window.location.href = "admin/admin.php";
+        } else if (transcript.includes("logout")) {
+            window.location.href = "logout.php";
+        } else {
+            showToast("Command not recognized.");
+        }
+    };
+
+    recognition.onerror = () => showToast("Error capturing voice.");
+});
+</script>
 </body>
 </html>

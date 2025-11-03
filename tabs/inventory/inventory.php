@@ -35,6 +35,45 @@ $result = $stmt->get_result();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Inventory Management</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+.voice-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.voice-btn:hover {
+    background-color: rgba(0,0,0,0.8);
+    transform: scale(1.1);
+}
+.toast-msg {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.toast-msg.show {
+    opacity: 1;
+}
+</style>
 </head>
 <body class="bg-light">
 
@@ -45,8 +84,11 @@ $result = $stmt->get_result();
     </div>
 
     <!-- Search + Add Button -->
-    <div class="d-flex justify-content-between mb-3">
-        <input type="text" id="searchBox" class="form-control w-50" placeholder="Search..." value="<?= htmlspecialchars($searchQuery) ?>">
+    <div class="d-flex justify-content-between mb-3 align-items-center">
+        <div class="d-flex align-items-center w-50">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search..." value="<?= htmlspecialchars($searchQuery) ?>">
+            <button id="micBtn" class="btn btn-dark ms-2"><i class="fa-solid fa-microphone"></i></button>
+        </div>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Add Inventory</button>
     </div>
 
@@ -101,7 +143,6 @@ $result = $stmt->get_result();
                                     <div class="mb-2"><label>Product Number</label><input type="text" name="product_number" class="form-control" value="<?= htmlspecialchars($row['product_number']) ?>" required></div>
                                     <div class="mb-2"><label>Name</label><input type="text" name="name" class="form-control" value="<?= htmlspecialchars($row['name']) ?>" required></div>
                                     <div class="mb-2"><label>Description</label><textarea name="description" class="form-control" rows="3"><?= htmlspecialchars($row['description']) ?></textarea></div>
-
                                     <div class="mb-2">
                                         <label>Category</label>
                                         <select name="category" class="form-select">
@@ -111,7 +152,6 @@ $result = $stmt->get_result();
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-
                                     <div class="mb-2"><label>Brand</label><input type="text" name="brand" class="form-control" value="<?= htmlspecialchars($row['brand']) ?>"></div>
                                     <div class="mb-2"><label>Supplier</label><input type="text" name="supplier" class="form-control" value="<?= htmlspecialchars($row['supplier']) ?>"></div>
                                     <div class="mb-2"><label>Current Stock</label><input type="number" name="current_stock" class="form-control" value="<?= $row['current_stock'] ?>"></div>
@@ -147,7 +187,6 @@ $result = $stmt->get_result();
                     <div class="mb-2"><label>Product Number</label><input type="text" name="product_number" class="form-control" required></div>
                     <div class="mb-2"><label>Name</label><input type="text" name="name" class="form-control" required></div>
                     <div class="mb-2"><label>Description</label><textarea name="description" class="form-control" rows="3"></textarea></div>
-
                     <div class="mb-2">
                         <label>Category</label>
                         <select name="category" class="form-select">
@@ -157,7 +196,6 @@ $result = $stmt->get_result();
                             <?php endforeach; ?>
                         </select>
                     </div>
-
                     <div class="mb-2"><label>Brand</label><input type="text" name="brand" class="form-control"></div>
                     <div class="mb-2"><label>Supplier</label><input type="text" name="supplier" class="form-control"></div>
                     <div class="mb-2"><label>Current Stock</label><input type="number" name="current_stock" class="form-control"></div>
@@ -165,7 +203,7 @@ $result = $stmt->get_result();
                     <div class="mb-2"><label>Price</label><input type="number" step="0.01" name="price" class="form-control"></div>
                     <div class="mb-2"><label>Selling Price</label><input type="number" step="0.01" name="selling_price" class="form-control"></div>
                     <div class="mb-2"><label>Barcode</label><input type="text" name="barcode" class="form-control"></div>
-                    <div class="mb-2"><label>Date of Arrival</label><input type="date" name="date_of_arrival" class="form-control"></div>
+                    <div class="mb-2"><label>Date of Arrival</label><input type="date" name="date_of_arrival" class="form-control" required></div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-success" name="add">Save</button>
@@ -175,13 +213,69 @@ $result = $stmt->get_result();
     </div>
 </div>
 
+<!-- Toast -->
+<div id="toast" class="toast-msg"></div>
+
+<!-- Floating Voice Button -->
+<button class="voice-btn" id="voiceBtn" title="Voice Command">
+    <i class="fa-solid fa-microphone"></i>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 const searchBox = document.getElementById('searchBox');
 searchBox.addEventListener('input', function() {
     const q = this.value.trim();
     window.location.href = 'inventory.php' + (q ? '?search=' + encodeURIComponent(q) : '');
 });
+
+const voiceBtn = document.getElementById('voiceBtn');
+const micBtn = document.getElementById('micBtn');
+const toast = document.getElementById('toast');
+
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function startVoiceRecognition(forSearch = false) {
+    if (!('webkitSpeechRecognition' in window)) {
+        showToast("Voice recognition not supported.");
+        return;
+    }
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.start();
+    showToast("Listening...");
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        showToast(`Heard: ${transcript}`);
+
+        if (forSearch) {
+            searchBox.value = transcript;
+            const q = transcript.trim();
+            window.location.href = 'inventory.php' + (q ? '?search=' + encodeURIComponent(q) : '');
+        } else {
+            if (transcript.includes("main menu") || transcript.includes("go back")) {
+                window.location.href = "../mainMenu.php";
+            } else {
+                showToast("Command not recognized.");
+            }
+        }
+    };
+
+    recognition.onerror = () => showToast("Error capturing voice.");
+}
+
+// Speech-to-text search
+micBtn.addEventListener('click', () => startVoiceRecognition(true));
+
+// Navigation voice command
+voiceBtn.addEventListener('click', () => startVoiceRecognition(false));
 </script>
 </body>
 </html>

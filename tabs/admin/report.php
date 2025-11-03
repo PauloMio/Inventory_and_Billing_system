@@ -30,7 +30,9 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Reports Dashboard</h2>
-    
+    <div class="d-flex justify-content-between mb-3">
+        <a href="admin.php" class="btn btn-secondary ms-2">Back to Admin Menu</a>
+    </div>
 
     <!-- Date Filter -->
     <form method="GET" class="row g-3 mb-4">
@@ -59,14 +61,13 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th><th>Product Name</th><th>Category</th><th>Brand</th>
+                            <th>Product Name</th><th>Category</th><th>Brand</th>
                             <th>Current Stock</th><th>Total Stock</th><th>Price</th><th>Date of Arrival</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($inventoryData as $inv): ?>
                         <tr>
-                            <td><?= $inv['id'] ?></td>
                             <td><?= htmlspecialchars($inv['name']) ?></td>
                             <td><?= htmlspecialchars($inv['category']) ?></td>
                             <td><?= htmlspecialchars($inv['brand']) ?></td>
@@ -97,14 +98,13 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th><th>Transaction ID</th><th>Name</th><th>Payment</th>
+                            <th>Transaction ID</th><th>Name</th><th>Payment</th>
                             <th>Change</th><th>Date</th><th>Products Purchased</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($billingData as $bill): ?>
                         <tr>
-                            <td><?= $bill['id'] ?></td>
                             <td><?= htmlspecialchars($bill['transaction_ID']) ?></td>
                             <td><?= htmlspecialchars($bill['name']) ?></td>
                             <td><?= number_format($bill['payment'], 2) ?></td>
@@ -159,14 +159,13 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th><th>Transaction ID</th><th>Product Name</th>
+                            <th>Transaction ID</th><th>Product Name</th>
                             <th>Quantity</th><th>Price</th><th>Remarks</th><th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($returnData as $ret): ?>
                         <tr>
-                            <td><?= $ret['id'] ?></td>
                             <td><?= htmlspecialchars($ret['transaction_ID']) ?></td>
                             <td><?= htmlspecialchars($ret['product_name']) ?></td>
                             <td><?= $ret['quantity'] ?></td>

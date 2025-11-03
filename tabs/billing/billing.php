@@ -23,6 +23,46 @@ while (in_array($transaction_ID, $existing_ids)) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Billing System</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+.voice-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+.voice-btn:hover {
+    background-color: rgba(0,0,0,0.9);
+    transform: scale(1.1);
+}
+.toast-msg {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.toast-msg.show {
+    opacity: 1;
+}
+</style>
 </head>
 <body class="bg-light">
 
@@ -61,14 +101,11 @@ while (in_array($transaction_ID, $existing_ids)) {
             <div class="card-header bg-dark text-white">Product Lookup</div>
             <div class="card-body">
                 <div class="row g-3 align-items-center">
-
-                    <!-- Auto Barcode Scanner -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Barcode Scanner (Auto)</label>
                         <input type="text" id="autoBarcodeInput" class="form-control" placeholder="Scan Barcode Automatically">
                     </div>
 
-                    <!-- Manual Barcode Entry -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Manual Search</label>
                         <input type="text" id="barcodeInput" class="form-control" placeholder="Enter Barcode and press Enter">
@@ -131,9 +168,19 @@ while (in_array($transaction_ID, $existing_ids)) {
     </form>
 </div>
 
+<!-- Toast Message -->
+<div id="toast" class="toast-msg"></div>
+
+<!-- Floating Voice Navigation Button -->
+<button class="voice-btn" id="voiceBtn" title="Voice Navigation">
+    <i class="fa-solid fa-microphone"></i>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-// --- Elements
+// --- Original Billing Logic (unchanged) ---
 const barcodeInput = document.getElementById('barcodeInput');
 const autoBarcodeInput = document.getElementById('autoBarcodeInput');
 const productTable = document.querySelector('#productTable tbody');
@@ -143,7 +190,6 @@ const paymentInput = document.getElementById('paymentInput');
 const changeInput = document.getElementById('changeInput');
 let products = [];
 
-// --- Manual Search (Press Enter)
 barcodeInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
@@ -152,7 +198,6 @@ barcodeInput.addEventListener('keypress', function(e) {
     }
 });
 
-// --- Auto Barcode Scanner Search ---
 let typingTimer;
 let lastKeyTime = 0;
 
@@ -161,7 +206,6 @@ autoBarcodeInput.addEventListener('input', function() {
     const timeDiff = currentTime - lastKeyTime;
     lastKeyTime = currentTime;
 
-    // If typing is fast (scanner), reset timer
     clearTimeout(typingTimer);
     typingTimer = setTimeout(() => {
         const barcode = autoBarcodeInput.value.trim();
@@ -169,10 +213,9 @@ autoBarcodeInput.addEventListener('input', function() {
             searchBarcode(barcode);
             autoBarcodeInput.value = '';
         }
-    }, timeDiff < 30 ? 100 : 500); // shorter delay for scanner input
+    }, timeDiff < 30 ? 100 : 500);
 });
 
-// --- Search function (shared)
 function searchBarcode(barcode) {
     if (!barcode) return;
     fetch(`billing_function.php?barcode=${barcode}`)
@@ -183,15 +226,11 @@ function searchBarcode(barcode) {
             } else {
                 alert('Product not found!');
             }
-            // --- Keep focus on the auto barcode input for next scan
             autoBarcodeInput.focus();
         })
-        .catch(() => {
-            autoBarcodeInput.focus();
-        });
+        .catch(() => autoBarcodeInput.focus());
 }
 
-// --- Add Product
 function addProduct(product) {
     const existing = products.find(p => p.barcode === product.barcode);
     if (existing) {
@@ -205,7 +244,6 @@ function addProduct(product) {
     renderTable();
 }
 
-// --- Render Table
 function renderTable() {
     productTable.innerHTML = '';
     let sumTotal = 0;
@@ -226,7 +264,6 @@ function renderTable() {
     calculateChange();
 }
 
-// --- Update Quantity
 function updateQty(index, qty) {
     qty = parseInt(qty);
     if (qty < 1) qty = 1;
@@ -235,7 +272,6 @@ function updateQty(index, qty) {
     renderTable();
 }
 
-// --- Remove Product
 function removeProduct(index) {
     if (confirm('Remove this product?')) {
         products.splice(index, 1);
@@ -243,7 +279,6 @@ function removeProduct(index) {
     }
 }
 
-// --- Clear Table
 document.getElementById('clearTable').addEventListener('click', () => {
     if (confirm('Clear all products?')) {
         products = [];
@@ -251,7 +286,6 @@ document.getElementById('clearTable').addEventListener('click', () => {
     }
 });
 
-// --- Payment and Change
 paymentInput.addEventListener('input', calculateChange);
 function calculateChange() {
     const total = parseFloat(sumTotalEl.textContent);
@@ -260,7 +294,6 @@ function calculateChange() {
     changeInput.value = change >= 0 ? change.toFixed(2) : '0.00';
 }
 
-// --- Validate Form
 function validateForm() {
     if (!products.length) {
         alert('Please add at least one product.');
@@ -278,9 +311,39 @@ function validateForm() {
     }
     productDataInput.value = JSON.stringify(products);
     return true;
-
     window.addEventListener('load', () => autoBarcodeInput.focus());
 }
+
+// --- Voice Navigation ---
+const toast = document.getElementById('toast');
+function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+const voiceBtn = document.getElementById('voiceBtn');
+voiceBtn.addEventListener('click', () => {
+    if (!('webkitSpeechRecognition' in window)) {
+        showToast("Voice recognition not supported.");
+        return;
+    }
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.start();
+    showToast("Listening...");
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        showToast(`Heard: ${transcript}`);
+        if (transcript.includes("main menu") || transcript.includes("go back")) {
+            window.location.href = "../mainMenu.php";
+        } else {
+            showToast("Command not recognized.");
+        }
+    };
+    recognition.onerror = () => showToast("Error capturing voice.");
+});
 </script>
 </body>
 </html>
