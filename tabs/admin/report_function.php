@@ -79,4 +79,20 @@ function getReturns($from = null, $to = null) {
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
+
+function getLogs($from = null, $to = null) {
+    global $conn;
+    $sql = "SELECT * FROM logs WHERE 1";
+    if ($from && $to) {
+        $sql .= " AND created_at BETWEEN ? AND ?";
+        $from .= " 00:00:00";
+        $to .= " 23:59:59";
+    }
+    $stmt = $conn->prepare($sql);
+    if ($from && $to) {
+        $stmt->bind_param("ss", $from, $to);
+    }
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 ?>

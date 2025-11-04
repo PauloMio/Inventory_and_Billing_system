@@ -9,6 +9,7 @@ $to = $_GET['to_date'] ?? null;
 $inventoryData = getInventory($from, $to);
 $billingData = getBillingWithProducts($from, $to);
 $returnData = getReturns($from, $to);
+$logsData = getLogs($from, $to);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -223,6 +224,40 @@ body { background-color: #f0f2f5; font-family: Arial, sans-serif; }
             </div>
         </div>
     </div>
+
+    <!-- Logs Card -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>System Logs (Login Attempts)</span>
+            <button class="btn btn-light btn-sm" onclick="printDiv('logsTable')">Print</button>
+        </div>
+        <div class="card-body">
+            <canvas id="logsChart" class="chart-container"></canvas>
+            <div id="logsTable" class="table-responsive mt-3">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>Attempt</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($logsData as $log): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($log['email']) ?></td>
+                            <td><?= htmlspecialchars($log['attempt']) ?></td>
+                            <td><?= htmlspecialchars($log['created_at']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($logsData)): ?>
+                        <tr><td colspan="4" class="text-center text-muted">No log records found.</td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Toast -->
@@ -259,6 +294,29 @@ new Chart(document.getElementById('returnsChart').getContext('2d'), {
     data: { labels: retLabels, datasets: [{ label: 'Quantity Returned', data: retData, backgroundColor: '#ff6b6b' }] }
 });
 
+// Logs Chart
+const logLabels = <?= json_encode(array_column($logsData, 'email')) ?>;
+const logAttempts = <?= json_encode(array_column($logsData, 'attempt')) ?>;
+
+// Count how many times each attempt type occurred
+const attemptCounts = logAttempts.reduce((acc, val) => {
+    acc[val] = (acc[val] || 0) + 1;
+    return acc;
+}, {});
+
+new Chart(document.getElementById('logsChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: Object.keys(attemptCounts),
+        datasets: [{
+            label: 'Attempt Frequency',
+            data: Object.values(attemptCounts),
+            backgroundColor: ['#27ae60', '#e74c3c']
+        }]
+    }
+});
+
+
 // Print Function
 function printDiv(divId) {
     let reportTitle = '';
@@ -270,6 +328,8 @@ function printDiv(divId) {
         reportTitle = 'Billing Report';
     } else if (divId === 'returnsTable') {
         reportTitle = 'Returns Report';
+    } else if (divId === 'logsTable') {
+        reportTitle = 'Logs Report';
     } else {
         reportTitle = 'Report';
     }
