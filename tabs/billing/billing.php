@@ -68,6 +68,9 @@ while (in_array($transaction_ID, $existing_ids)) {
 
 <div class="container py-5">
     <h2 class="mb-4 text-center">Billing System</h2>
+    <div class="d-flex justify-content-between mb-3">
+        <a href="../mainMenu.php" class="btn btn-secondary ms-2">Back to Main Menu</a>
+    </div>
 
     <!-- Customer Info -->
     <form action="billing_function.php" method="POST" onsubmit="return validateForm();">
@@ -161,7 +164,6 @@ while (in_array($transaction_ID, $existing_ids)) {
         <div class="text-end">
             <button class="btn btn-primary px-4" name="save_transaction">Save Transaction</button>
             <a href="load_transaction.php" class="btn btn-info ms-2">Load Previous Transaction</a>
-            <a href="../mainMenu.php" class="btn btn-secondary ms-2">Back to Main Menu</a>
         </div>
 
         <input type="hidden" name="product_data" id="productData">
