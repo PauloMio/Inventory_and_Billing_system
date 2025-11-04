@@ -25,6 +25,13 @@ if (!empty($params)) {
 
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Fetch departments for dropdown
+$deptResult = $conn->query("SELECT * FROM department ORDER BY department ASC");
+$departments = [];
+while ($row = $deptResult->fetch_assoc()) {
+    $departments[] = $row;
+}
 ?>
 
 <!DOCTYPE html>

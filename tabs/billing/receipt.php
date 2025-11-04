@@ -35,7 +35,7 @@ body { padding: 20px; }
     <div class="text-center mb-4">
         <h2>High Intensity Computer Center</h2>
         <h5>Cauayan City, Isabela</h5>
-        <p>Official Transaction Receipt</p>
+        <p>Billing Transaction Receipt</p>
     </div>
 
     <div class="mb-3">

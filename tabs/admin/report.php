@@ -261,18 +261,42 @@ new Chart(document.getElementById('returnsChart').getContext('2d'), {
 
 // Print Function
 function printDiv(divId) {
+    let reportTitle = '';
+
+    // Determine which section is being printed
+    if (divId === 'inventoryTable') {
+        reportTitle = 'Inventory Report';
+    } else if (divId === 'billingTable') {
+        reportTitle = 'Billing Report';
+    } else if (divId === 'returnsTable') {
+        reportTitle = 'Returns Report';
+    } else {
+        reportTitle = 'Report';
+    }
+
     const content = document.getElementById(divId).innerHTML;
     const myWindow = window.open('', '', 'width=900,height=600');
-    myWindow.document.write('<html><head><title>Print</title>');
+
+    myWindow.document.write('<html><head><title>' + reportTitle + '</title>');
     myWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">');
-    myWindow.document.write('<style>body{padding:20px;font-family:Arial,sans-serif;} h2{text-align:center;margin-bottom:20px;}</style>');
-    myWindow.document.write('</head><body>');
-    myWindow.document.write('<h2>High Intensity</h2>');
+    myWindow.document.write('<style>');
+    myWindow.document.write('body{padding:20px;font-family:Arial,sans-serif;}');
+    myWindow.document.write('h2{text-align:center;margin-bottom:20px;}');
+    myWindow.document.write('table{width:100%;border-collapse:collapse;}');
+    myWindow.document.write('th,td{padding:8px;border:1px solid #ccc;text-align:left;}');
+    myWindow.document.write('</style></head><body>');
+    myWindow.document.write('<h2>' + reportTitle + '</h2>');
+    const fromDate = "<?= $from ? htmlspecialchars($from) : '' ?>";
+    const toDate = "<?= $to ? htmlspecialchars($to) : '' ?>";
+    if (fromDate && toDate) {
+        myWindow.document.write('<p style="text-align:center;margin-bottom:20px;">Date Range: ' + fromDate + ' to ' + toDate + '</p>');
+    }
     myWindow.document.write(content);
     myWindow.document.write('</body></html>');
     myWindow.document.close();
     myWindow.print();
 }
+
 
 // --- Voice Navigation ---
 const toast = document.getElementById('toast');
